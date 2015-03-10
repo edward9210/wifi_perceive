@@ -31,7 +31,7 @@ class Adapter:
         for i in range(len(self.ap_list)):
             self.ap_dict[self.ap_list[i]] = count
             count += 1
-        print (self.ap_dict)
+        # print (self.ap_dict)
 
     def __transfromDataToInputForm(self):
         self.data_set = []
@@ -58,7 +58,7 @@ class Adapter:
                     tmp_list.append(dict[self.ap_list[i]])
             tmp_list.append(area_type)
             self.data_set.append(tmp_list)
-        print(self.data_set)
+        # print(self.data_set)
 
     @property
     def data(self):

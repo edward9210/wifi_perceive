@@ -49,10 +49,10 @@ def parse_packet(rtpacket):
         # print (`field`)
         if isinstance(field, dpkt.radiotap.Radiotap.AntennaSignal):
             signal = field.db - 256
-            if signal < 127 and signal > -128 and len(client_mac) == 6:
+            if signal < 0 and signal > -128 and len(client_mac) == 6:
                 return signal, client_mac
             else:
-                print ('error mac : ' + mac_to_str(client_mac))
+                # print ('error mac : ' + mac_to_str(client_mac))
                 break
     return None
 
