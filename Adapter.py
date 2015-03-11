@@ -1,5 +1,6 @@
 from __future__ import print_function
 import re
+import random
 
 NULL_RSSI_VALUE = -128
 
@@ -9,10 +10,10 @@ class Adapter:
         self.ap_dict = {}
         self.ap_list = []
         self.data_set = []
-        self.__bulidApMap()
+        self.__bulidApMapping()
         self.__transfromDataToInputForm()
 
-    def __bulidApMap(self):
+    def __bulidApMapping(self):
         file = open(self.filepath, 'r')
         self.ap_dict = {}
         self.ap_list = []
@@ -59,6 +60,15 @@ class Adapter:
             tmp_list.append(area_type)
             self.data_set.append(tmp_list)
         # print(self.data_set)
+
+    def disorganizeData(self):
+        newData = []
+        numOfEntries = len(self.data)
+        for i in range(numOfEntries):
+            index = random.randint(0, numOfEntries - i - 1)
+            newData.append(self.data[index])
+            del self.data[index]
+        self.data = newData
 
     @property
     def data(self):

@@ -46,7 +46,7 @@ class DecisionTreeC4_5:
         baseEntropy = self.__calcEntropy(dataSet)
         allValInSelectedAttr = list(set([(example[axis], example[-1]) for example in dataSet]))
         allValInSelectedAttr.sort()
-        print allValInSelectedAttr
+        # print allValInSelectedAttr
         splitPoints = []
         preRssi = allValInSelectedAttr[0][0]
         preLabel = allValInSelectedAttr[0][1]
@@ -55,7 +55,7 @@ class DecisionTreeC4_5:
                 splitPoints.append(float(rssi + preRssi) / 2.0)
             preRssi = rssi
             preLabel = label
-        print splitPoints
+        # print splitPoints
         bestInfoGainRatio = 0.0
         bestSpiltPoint = 0.0
         numOfEntries = len(dataSet)
@@ -68,11 +68,11 @@ class DecisionTreeC4_5:
             infoGain = baseEntropy - newEntropy
             splitInfo = -(prob * log(prob, 2.0) + (1 - prob) * log((1 - prob), 2.0))
             infoGainRatio = infoGain / splitInfo
-            print sp, infoGainRatio
+            # print sp, infoGainRatio
             if infoGainRatio > bestInfoGainRatio:
                 bestInfoGainRatio = infoGainRatio
                 bestSpiltPoint = sp
-        print bestInfoGainRatio, bestSpiltPoint
+        # print bestInfoGainRatio, bestSpiltPoint
         return bestSpiltPoint, bestInfoGainRatio
 
     def __splitDataSet(self, dataSet, axis, splitPoint):
@@ -143,8 +143,10 @@ class DecisionTreeC4_5:
         myTree = {(bestAttrName, bestSplitPoint) : {}}
         del(attrNamelist[bestAttr])
         leftChildDataSet, rightChildDataSet = self.__splitDataSet(dataSet, bestAttr, bestSplitPoint)
-        myTree[(bestAttrName, bestSplitPoint)]['left'] = self.__createTree(leftChildDataSet, attrNamelist[:])
-        myTree[(bestAttrName, bestSplitPoint)]['right'] = self.__createTree(rightChildDataSet, attrNamelist[:])
+        if len(leftChildDataSet) != 0:
+            myTree[(bestAttrName, bestSplitPoint)]['left'] = self.__createTree(leftChildDataSet, attrNamelist[:])
+        if len(rightChildDataSet) != 0:
+            myTree[(bestAttrName, bestSplitPoint)]['right'] = self.__createTree(rightChildDataSet, attrNamelist[:])
         return myTree
 
     def createTree(self):
