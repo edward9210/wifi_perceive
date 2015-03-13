@@ -16,6 +16,7 @@ class DecisionTreeC4_5:
         for attrName in attrNamelist:
             self.__attrNamelist.append(attrName)
         self.__attrNameDict = attrNameDict
+        self.__tree = None
 
     def __calcEntropy(self, dataSet):
         """
@@ -102,7 +103,7 @@ class DecisionTreeC4_5:
         """
         numOfAttrs = len(dataSet[0]) - 1
         bestInfoGainRatio = 0.0
-        bestAttr = -1
+        bestAttr = 0
         bestSplitPoint = 0.0
         for i in range(numOfAttrs):
             splitPoint, gainRatio = self.__calcGainRatio(dataSet, i)
@@ -157,12 +158,14 @@ class DecisionTreeC4_5:
         self.__tree = self.__createTree(self.__dataSet, self.__attrNamelist)
         return self.__tree
 
-    def getLabel(self, dataVec):
+    def predict(self, dataVec):
         """
             get the label prediction for the input dataVec
             :param dataVec: [attrValue1, attrValue2, ...]
             :return: the label prediction
         """
+        if self.__tree == None:
+            self.createTree()
         tree = self.__tree
         while True:
             if type(tree) is not dict:
@@ -174,6 +177,12 @@ class DecisionTreeC4_5:
                 tree = tree['left']
             else:
                 tree = tree['right']
+
+    @property
+    def dTree(self):
+        if self.__tree == None:
+            self.createTree()
+        return self.__tree
 
 
 
