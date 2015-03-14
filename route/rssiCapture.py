@@ -1,43 +1,58 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function
 import struct
 import socket
 import fcntl
 import time
+import sys
 import os
 from threading import RLock, Thread
 from time import sleep
 from contextlib import contextmanager
-from collections import namedtuple, deque, defaultdict
+from collections import deque, defaultdict
 
 import pcap
 import dpkt
 
+TYPE = 0x11
 SMOOTH_INTERVAL = 1.5
 
-DEBUG = True
-
-
 def log(*args, **kwargs):
-    if not DEBUG:
-        return
+    """
+        print the input args and kwargs
+        :param args:
+        :param kwargs:
+        :return:
+    """
     print(*args, **kwargs)
 
 
 def get_mac(dev):
+    """
+        get the route's MAC address
+        :param dev: the route
+        :return: the MAC address of the route
+    """
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return fcntl.ioctl(s.fileno(), 0x8927, struct.pack('256s', dev[:15]))[18:24]
 
 
 def mac_to_str(mac):
+    """
+        transform MAC address to string
+        :param mac:
+        :return: the string of MAC address
+    """
     return ':'.join(['%02x' % ord(x) for x in mac])
 
 
 def parse_packet(rtpacket):
     """
-    return: (signal, client_mac) or None
-
-    None will be returned when the packet is not a ethernet packet.
+        parse the radiotap packet
+        :param rtpacket: the radiotap packet
+        :return: (signal, client_mac) or None : None will be returned when the packet is not a ethernet packet
     """
     radiotap = dpkt.radiotap.Radiotap(rtpacket)
     it_len = struct.unpack('<H', struct.pack('>H', radiotap.length))[0]
@@ -61,9 +76,12 @@ class Daemon:
 
     def __init__(self, wdev, out_ip, out_port, interval):
         """
-        wdev: Wireless device
-        (out_ip, out_port): Send data to this address by TCP or UDP
-        interval: Time interval
+            the daemon running on the OpenWrt device
+            :param wdev: Wireless device
+            :param out_ip: the ip address of sending data
+            :param out_port: the port of out_ip
+            :param interval: the time interval of sending data (ms)
+            :return:
         """
         self.addr = (out_ip, out_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -77,10 +95,14 @@ class Daemon:
         self.pcap = None
 
     def start(self):
+        """
+            start running the daemon
+            :return:
+        """
         wdev = self.wdev
         os.system('ifconfig {} down && ifconfig {} up'.format(wdev, wdev))
         log('Daemon started:\n  dev: {}\n  mac: {}\n  dest: {}\n  interval: {}\n'.format(
-            wdev, self.ap_mac, self.addr, self.interval))
+            wdev, mac_to_str(self.ap_mac), self.addr, self.interval))
         th_send = Thread(target=self.run_send)
         th_capture = Thread(target=self.run_capture)
         ths = [
@@ -100,6 +122,10 @@ class Daemon:
             self.quit()
 
     def run_send(self):
+        """
+            sending captured data to the (out_ip, out_port) (running by a thread)
+            :return:
+        """
         with self.guard():
             while not self.need_quit:
                 sleep(self.interval)
@@ -116,13 +142,16 @@ class Daemon:
                     signals = []
                     for client_mac, que in self.signals.iteritems():
                         # que: deque<(timestamp, signal)>
-                        # DEBUG
                         signal = sum([signal for _, signal in que]) / len(que)
-                        print('  ', mac_to_str(client_mac), len(que), signal)
+                        print('\t', mac_to_str(client_mac), len(que), signal)
                         signals.append((client_mac, signal))
                     self.send_record(timestamp, signals)
 
     def run_capture(self):
+        """
+            capture the data and save it in a queue (running by a thread)
+            :return:
+        """
         with self.guard():
             while not self.need_quit:
                 recv_count = 0
@@ -145,10 +174,18 @@ class Daemon:
                     recv_count += 1
 
     def quit(self):
+        """
+            quit the deamon
+            :return:
+        """
         self.need_quit = True
 
     @contextmanager
     def guard(self):
+        """
+            insure two thread(th_send, th_capture) working well
+            :return:
+        """
         try:
             yield
         except:
@@ -157,52 +194,39 @@ class Daemon:
 
     def send_record(self, timestamp, signals):
         """
-        A record contains a head and a body.
-        head:
-        ----------------------------------------------------------------------------------------
-        | type(1u) | vendor(1u) | version(1u) | ap_mac(6) | time(8u) | errcode(1u) | count(1u) |
-        ----------------------------------------------------------------------------------------
-        body:
-        ----------------------
-        | mac(6) | value(10) | x count
-        ----------------------
-        value:
-        --------------------------------------------------------------
-        | dev_type(1u) | seq_number(2u) | rssi(1s) | dev_version(1u) |
-        --------------------------------------------------------------
-        ------------------------------------------------------
-        | data1(1) | data2(1) | dev_status(1u) | default(2u) |
-        ------------------------------------------------------
+            packet the sending data and send it
+            :param timestamp: the timestamp of sending time
+            :param signals: (client_mac, rssi)'s list
+            :return:
+            A record contains a head and a body
+            head:
+            -------------------------------------------------
+            | type(1) | ap_mac(6) | timestamp(8) | count(1) |
+            -------------------------------------------------
+            body:
+            --------------------
+            | mac(6) | rssi(1) |
+            --------------------
         """
         try:
-            while signals:
-                signals, reset_signals = signals[:255], signals[255:]
-                head = struct.pack('>BBB6sIxxxxBB',
-                        0xbd, 0, 0, self.ap_mac, timestamp, 0, len(signals))
-                body = b''.join(
-                    struct.pack('>6sBHbBBBBH', client_mac, 1, 0x00, signal, 0, 0, 0, 0, 0x00)
-                    for client_mac, signal in signals
-                )
-                record = head + body
-                self.sock.sendto(record, self.addr)
-                log(timestamp, 'sent', len(signals), 'signals')
-                # log(timestamp, ' different clients', len(set([mac for mac, _ in signals])))
-                signals = reset_signals
+            head = struct.pack('>B6sIxxxB',
+                    TYPE, self.ap_mac, timestamp, len(signals))
+            body = b''.join(
+                struct.pack('>6sb', client_mac, signal) for client_mac, signal in signals
+            )
+            record = head + body
+            self.sock.sendto(record, self.addr)
+            log('time:', timestamp, 'sent', len(signals), 'signals')
+            print ('-----------------------------------------------------------------')
         except socket.error as e:
             log('error:', e)
             return
 
-
-def main():
-    import sys
+if __name__ == '__main__':
     if len(sys.argv) < 5:
-        exit('usage: rssicap.py wdev out_ip out_port interval')
+        exit('usage: python rssiCaputure.py wdev out_ip out_port interval')
     else:
         wdev, out_ip, out_port, interval = sys.argv[1:]
         out_port = int(out_port)
         interval = int(interval)
         Daemon(wdev, out_ip, out_port, interval).start()
-
-
-if __name__ == '__main__':
-    main()
