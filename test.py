@@ -1,5 +1,4 @@
-from DPM.adapter import Adapter
-from PAM.decisionTreeC4_5 import DecisionTreeC4_5
+from WCM.adapter import Adapter
 from PAM.bagging import Bagging
 
 if __name__ == '__main__':

@@ -41,7 +41,7 @@ def get_mac(dev):
 
 def mac_to_str(mac):
     """
-        transform MAC address to string
+        transform MAC address into string
         :param mac:
         :return: the string of MAC address
     """
@@ -209,7 +209,7 @@ class Daemon:
             --------------------
         """
         try:
-            head = struct.pack('>B6sIxxxB',
+            head = struct.pack('>B6sIxxxxB',
                     TYPE, self.ap_mac, timestamp, len(signals))
             body = b''.join(
                 struct.pack('>6sb', client_mac, signal) for client_mac, signal in signals
@@ -224,7 +224,7 @@ class Daemon:
 
 if __name__ == '__main__':
     if len(sys.argv) < 5:
-        exit('usage: python rssiCaputure.py wdev out_ip out_port interval')
+        exit('usage: python rssiCapture.py wdev out_ip out_port interval')
     else:
         wdev, out_ip, out_port, interval = sys.argv[1:]
         out_port = int(out_port)
