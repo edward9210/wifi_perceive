@@ -48,4 +48,11 @@ class Queue:
         else:
             return False
 
+def mac_to_str(mac):
+    """
+        transform MAC address into string
+        :param mac:
+        :return: the string of MAC address
+    """
+    return str(':'.join(['%02x' % ord(x) for x in mac]))
 

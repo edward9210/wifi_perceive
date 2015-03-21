@@ -12,7 +12,6 @@ ROUTE_MES_TYPE = 0x11
 DPM_MES_TYPE = 0x22
 DPM_PORT = 10234
 WCM_PORT = 10235
-PAM_PORT = 10236
 
 dataDict = {}
 lock = RLock()

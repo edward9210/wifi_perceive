@@ -5,4 +5,4 @@ from tornado.web import RequestHandler
 
 class MonitorHandler(RequestHandler):
     def get(self):
-        pass
+        self.render('monitor.html')

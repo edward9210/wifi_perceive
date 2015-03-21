@@ -26,6 +26,7 @@ class DPMProxy(tcpserver.TCPServer):
         """
         super(DPMProxy, self).__init__()
         self.__que = Queue()
+        self.__client_macs = set()
         self.__interval = interval
 
     @gen.engine
@@ -43,6 +44,8 @@ class DPMProxy(tcpserver.TCPServer):
                 body = yield gen.Task(stream.read_bytes, length)
                 body = json.loads(body.decode('utf-8'))
                 # print timestamp, body
+                for client_mac in body.keys():
+                    self.__client_macs.add(client_mac)
                 self.__que.put({timestamp : body})
 
     def query(self):
@@ -55,6 +58,13 @@ class DPMProxy(tcpserver.TCPServer):
             return self.__que.head()
         else:
             return {str(int(time.time())) : ''}
+
+    def getAllClientMac(self):
+        """
+            get all client macs
+            :return: the list all client macs
+        """
+        return list(self.__client_macs)
 
     def __que_sync(self):
         """
@@ -70,6 +80,13 @@ class DPMProxy(tcpserver.TCPServer):
                     self.__que.pop()
                 else:
                     break
+
+    @property
+    def interval(self):
+        """
+            :return: the interval of dpm proxy
+        """
+        return self.__interval
 
 
 

@@ -12,6 +12,7 @@ from proxy.dpm import DPMProxy
 from handlers.IndexHandler import IndexHandler
 from handlers.MonitorHandler import MonitorHandler
 from handlers.DPMDataHandler import DPMDataHandler
+from handlers.AjaxMonitorHandler import AjaxMonitorHandler
 
 subpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,6 +21,7 @@ HANDLERS = [
     (r'/monitor', MonitorHandler),
 
     (r'/dpmdata', DPMDataHandler),
+    (r'/ajax_monitor', AjaxMonitorHandler),
 ]
 
 
