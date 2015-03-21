@@ -9,6 +9,7 @@ from time import sleep, time
 import json
 
 ROUTE_MES_TYPE = 0x11
+DPM_MES_TYPE = 0x22
 DPM_PORT = 10234
 WCM_PORT = 10235
 PAM_PORT = 10236
@@ -22,7 +23,7 @@ def mac_to_str(mac):
         :param mac:
         :return: the string of MAC address
     """
-    return ':'.join(['%02x' % ord(x) for x in mac])
+    return str(':'.join(['%02x' % ord(x) for x in mac]))
 
 class DPM:
     """
@@ -58,17 +59,16 @@ class DPM:
 
     def runSend(self):
         """
-            Send data to the WCM and PAM
+            Send data to the WCM
             :return:
         """
         while not self.__needQuit:
             sleep(self.__interval)
             with lock:
-                print time(), dataDict
-
                 body = json.dumps(dataDict)
-                header = struct.pack('>BIxxxxI', 0x22, time(), len(body))
+                header = struct.pack('>BIxxxxI', DPM_MES_TYPE, int(time()), len(body))
 
+                print int(time()), body
                 """
                     send data to WCM
                 """
@@ -82,20 +82,6 @@ class DPM:
                     print 'conncect WCM failed'
                 finally:
                     WCMSender.close()
-
-                """
-                    send data to PAM
-                """
-                try:
-                    PAMSender = TcpClient('0.0.0.0', PAM_PORT)
-                    PAMSender.connect()
-                    PAMSender.write(header)
-                    PAMSender.write(body.encode('utf-8'))
-                    PAMSender.flush()
-                except:
-                    print 'conncect PAM failed'
-                finally:
-                    PAMSender.close()
 
                 dataDict.clear()
 
