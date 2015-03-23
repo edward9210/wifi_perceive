@@ -5,6 +5,8 @@ import pymongo
 
 DB = {
     'name': 'wcm',
+    'user': 'root',
+    'pwd': '123456',
 }
 
 def get_db():
@@ -13,6 +15,7 @@ def get_db():
         :return: the database
     """
     db = pymongo.MongoClient()[DB['name']]
+    db.authenticate(DB['user'], DB['pwd'])
     return db
 
 

@@ -24,7 +24,7 @@ class StopSampleHandler(RequestHandler):
         type = self.get_argument('type')
         model = Sample(self.settings['dpm_proxy'])
         model.stop_sampling(client_mac, type)
-        self.render('sample.html', model = Sample(self.settings['dpm_proxy']))
+        self.redirect('/sample')
 
 class AjaxSampleHandler(RequestHandler):
     def post(self):

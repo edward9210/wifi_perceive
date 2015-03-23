@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
+
+from WCM.db import get_db
+
 class Sample:
     """
         Sample Model
@@ -38,9 +42,18 @@ class Sample:
 
     def stop_sampling(self, client_mac, type):
         data = self.__dpm_proxy.delSampleMac(client_mac)
-        print 'data:'
+        print 'sample_data:'
         print data
         # write into database
+        if len(data) != 0:
+            db = get_db()
+            sampleData = db.sampledata
+            sampleData.insert({
+                'name' : client_mac + '_' + type + '_' + time.strftime("%Y%m%d%H%M%S", time.localtime()),
+                'type' : type,
+                'data' : data
+            })
+
 
     def sampled_data(self, client_mac):
         return self.__dpm_proxy.querySampledData(client_mac)
