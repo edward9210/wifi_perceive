@@ -28,6 +28,8 @@ class DPMProxy(tcpserver.TCPServer):
         self.__que = Queue()
         self.__client_macs = set()
         self.__interval = interval
+        self.__sample_set = set()
+        self.__sample_data = {}
 
     @gen.engine
     def handle_stream(self, stream, address):
@@ -46,6 +48,11 @@ class DPMProxy(tcpserver.TCPServer):
                 # print timestamp, body
                 for client_mac in body.keys():
                     self.__client_macs.add(client_mac)
+                    if client_mac in self.__sample_set:
+                        if client_mac not in self.__sample_data.keys():
+                            self.__sample_data[client_mac] = []
+                        self.__sample_data[client_mac].append(body[client_mac])
+                # print self.__sample_data
                 self.__que.put({timestamp : body})
 
     def query(self):
@@ -88,5 +95,35 @@ class DPMProxy(tcpserver.TCPServer):
         """
         return self.__interval
 
+    def addSampleMac(self, mac):
+        """
+            add client mac in sample set
+            :param mac: client mac
+            :return:
+        """
+        self.__sample_set.add(mac)
 
+    def delSampleMac(self, mac):
+        """
+            delete client mac in sample set
+            :param mac: client mac
+            :return: the list of sampled data
+        """
+        self.__sample_set.remove(mac)
+        if mac in self.__sample_data.keys():
+            result = self.__sample_data.pop(mac)
+            return result
+        else:
+            return []
+
+    def querySampledData(self, mac):
+        """
+            query sampled data by client mac
+            :param mac: client mac
+            :return: Sampled Data by mac
+        """
+        if mac in self.__sample_data.keys():
+            return self.__sample_data[mac]
+        else:
+            return []
 

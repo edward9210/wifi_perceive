@@ -29,7 +29,7 @@ class Monitor:
             if client_mac not in clients_data.keys():
                 continue
             result[client_mac] = clients_data[client_mac]
-        print result
+        # print result
         return {
             'result' : result,
             'timestamp' : timestamp,

@@ -10,18 +10,22 @@ from tornado import httpserver, ioloop, web
 
 from proxy.dpm import DPMProxy
 from handlers.IndexHandler import IndexHandler
-from handlers.MonitorHandler import MonitorHandler
+from handlers.MonitorHandler import MonitorHandler, AjaxMonitorHandler
 from handlers.DPMDataHandler import DPMDataHandler
-from handlers.AjaxMonitorHandler import AjaxMonitorHandler
+from handlers.SampleHandler import SampleHandler, StartSampleHandler, StopSampleHandler, AjaxSampleHandler
 
 subpath = os.path.dirname(os.path.realpath(__file__))
 
 HANDLERS = [
     (r'/', IndexHandler),
+    (r'/sample', SampleHandler),
     (r'/monitor', MonitorHandler),
 
     (r'/dpmdata', DPMDataHandler),
     (r'/ajax_monitor', AjaxMonitorHandler),
+    (r'/start_sample', StartSampleHandler),
+    (r'/stop_sample', StopSampleHandler),
+    (r'/ajax_sample', AjaxSampleHandler),
 ]
 
 

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>The WIFI Perceive System</title>
+	<script type="text/javascript" src="{{static_url('js/jquery-1.11.0.min.js')}}"> </script>
+	<style type="text/css">
+		#top_bar {
+			margin-top : 20px;
+		}
+	</style>
+</head>
+<body>
+	<a href="/"><button onclick="this.parentNode.click()" type="button"> 返回 </button></a>
+	<div id="top_bar">
+		<form action="/start_sample" method="POST" onsubmit="return check_form()">
+			client_mac :
+			<select name="client_mac" id="client_mac">
+				{% for client_mac in model.client_macs %}
+					<option value="{{client_mac}}">{{client_mac}}</option>
+				{% end %}
+			</select>
+			type :
+			<input id="type" name="type">
+			<input id="sample_button" type="submit" value="Sample">
+		</form>
+
+	</div>
+
+	<script type="text/javascript" src="{{static_url('js/sample.js')}}"></script>
+</body>
+</html>

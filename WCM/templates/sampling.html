@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>The WIFI Perceive System</title>
+	<script type="text/javascript" src="{{static_url('js/jquery-1.11.0.min.js')}}"> </script>
+	<style type="text/css">
+		#top_bar {
+			margin-top : 20px;
+		}
+	</style>
+</head>
+<body>
+	<div id="top_bar">
+        <p>Sampling "{{model.mac}}" (type is {{model.type}}) </p>
+		<form action="/stop_sample" method="POST" onsubmit="return check_form()">
+            <input id="client_mac" type="hidden" name="client_mac" value="{{model.mac}}">
+            <input id="type" type="hidden" name="type" value="{{model.type}}">
+			<input id="stop_button" type="submit" value="Stop_and_Save">
+		</form>
+	</div>
+
+    <br />
+    <p> Sampled Data Display Area </p>
+	<div id="data_display_area"></div>
+    <script type="text/javascript" src="{{static_url('js/sampling.js')}}"></script>
+</body>
+</html>

@@ -204,15 +204,15 @@ function update_data() {
         url: '/ajax_monitor',
         dataType: 'json',
         data: {
-          clients: JSON.stringify((function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = clients.length; _i < _len; _i++) {
-              client = clients[_i];
-              _results.push(client.mac);
-            }
-            return _results;
-          })())
+            clients: JSON.stringify((function() {
+                var _i, _len, _results;
+                _results = [];
+                for (_i = 0, _len = clients.length; _i < _len; _i++) {
+                    client = clients[_i];
+                    _results.push(client.mac);
+                }
+                return _results;
+            })())
         },
         success: function(data) {
             result = data.result;
