@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>The WIFI Perceive System</title>
+    <link rel="stylesheet" href="{{static_url('css/jquery-ui.min.css')}}">
+    <script type="text/javascript" src="{{static_url('js/jquery-1.11.0.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/jquery-ui.min.js')}}"> </script>
+    <style>
+        #left, #mid, #right{
+            float: left;
+        }
+        form{
+            margin-top: 45px;
+        }
+        #percentage, #tree_num {
+            margin: 6px 0px;
+        }
+        .clear {
+            padding-top: 10px;
+            clear: both;
+        }
+        #sampledDataList, #selectedToTrain {
+            border: 1px solid #eee;
+            min-width: 200px;
+            min-height: 150px;
+            list-style-type: none;
+            margin: 0;
+            padding: 5px 0 0 0;
+            float: left;
+            margin-right: 10px;
+        }
+        #sampledDataList li, #selectedToTrain li {
+            margin: 0 5px 5px 5px;
+            padding: 5px;
+            min-width: 175px;
+        }
+        #sampledDataList li:active, #selectedToTrain li:active{
+            background: #ffe;
+        }
+    </style>
+</head>
+<body>
+    <a href="/"><button onclick="this.parentNode.click()" type="button"> 返回 </button></a>
+    <div id="top">
+        <div id="left">
+            <p>Sampled Data List</p>
+            <ul id="sampledDataList" class="connectedSortable">
+                {% for name in model.dataNameList %}
+                    <li class="ui-state-default" onclick="click_data(event)">{{name}}</li>
+                {% end %}
+            </ul>
+        </div>
+        <div id="mid">
+            <p>Selected to Train</p>
+            <ul id="selectedToTrain" class="connectedSortable"></ul>
+        </div>
+        <div id="right">
+            <form action="/start_train" method="POST" onsubmit="return check_form()">
+                percentage :
+                <input id="percentage" type="number" name="percentage" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                %
+                <br/>
+                tree number :
+                <input id="tree_num" type="number" name="tree_num" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                <br/>
+                <input id="train_button" type="submit" value="Train">
+            </form>
+        </div>
+    </div>
+    <div id="bottom" class="clear">
+        <p>Data Display:</p>
+        <div id="data_display"> </div>
+    </div>
+    <script type="text/javascript" src="{{static_url('js/train.js')}}"></script>
+</body>
+</html>
