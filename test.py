@@ -1,4 +1,4 @@
-from WCM.adapter import Adapter
+from PAM.adapter import Adapter
 from PAM.bagging import Bagging
 
 if __name__ == '__main__':

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>The WIFI Perceive System</title>
+</head>
+<body>
+    <a href="/"><button onclick="this.parentNode.click()" type="button"> 返回 </button></a>
+    <p> Use {{model.percentage * 100}}% to train ({{model.numOfTrain}} data) </p>
+    <p> Use {{(1 - model.percentage) * 100}}% to validate ({{model.numOfTest}} data) </p>
+    <p> Correct rate : {{model.correctRate * 100}}% </p>
+    <form action="/save_train_result" method="POST">
+        <input name="trees" id="trees" value="{{model.trees}}" type="hidden">
+        <input id="save_train_result" type="submit" value="Save_train_result">
+    </form>
+    <p> {{model.numOfTree}} Decision Trees : </p>
+    {% for tree in model.trees %}
+        <p>{{tree}}</p>
+    {% end %}
+</body>
+</html>

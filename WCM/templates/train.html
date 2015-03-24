@@ -56,13 +56,14 @@
             <ul id="selectedToTrain" class="connectedSortable"></ul>
         </div>
         <div id="right">
-            <form action="/start_train" method="POST" onsubmit="return check_form()">
+            <form action="/training_result" method="POST" onsubmit="return check_form()">
                 percentage :
                 <input id="percentage" type="number" name="percentage" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')">
                 %
                 <br/>
                 tree number :
                 <input id="tree_num" type="number" name="tree_num" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                <input id="selected_data" type="hidden" name="selected_data">
                 <br/>
                 <input id="train_button" type="submit" value="Train">
             </form>

@@ -13,6 +13,7 @@ class Bagging:
         """
         self.__dataSet = dataSet
         self.__attrNamelist = []
+        self.__numOfTree = 0
         for attrName in attrNamelist:
             self.__attrNamelist.append(attrName)
         self.__attrNameDict = attrNameDict
@@ -25,6 +26,7 @@ class Bagging:
             :param percentage: the percentage of the training set
             :return:
         """
+        self.__numOfTree = numOfTrees
         numOfEntries = len(self.__dataSet)
         numOfSamples = int(numOfEntries * percentage)
         self.__classifiers = []
@@ -35,8 +37,8 @@ class Bagging:
                 trainingSet.append(self.__dataSet[index])
             dt = DecisionTreeC4_5(trainingSet, self.__attrNamelist, self.__attrNameDict)
             self.__classifiers.append(dt)
-        for i in range(numOfTrees):
-            print self.__classifiers[i].dTree
+        # for i in range(numOfTrees):
+        #    print self.__classifiers[i].dTree
 
     def predict(self, dataVec):
         """
@@ -59,3 +61,11 @@ class Bagging:
                 maxCount = labelConut[key]
                 bestLabel = key
         return bestLabel
+
+    @property
+    def trees(self):
+        trees = []
+        for i in range(self.__numOfTree):
+            trees.append(self.__classifiers[i].dTree)
+        return trees
+

@@ -20,6 +20,14 @@ function click_data(event) {
     });
 }
 
+function get_selected_data() {
+    var children = $('#selectedToTrain').children();
+    var results = new Array();
+    for (var i = 0; i < children.length; i++)
+        results[i] = children[i].innerHTML;
+    return results;
+}
+
 function check_form(){
     if ($('#selectedToTrain').children().length == 0) {
         alert('you don\'t select data to train!');
@@ -47,6 +55,7 @@ function check_form(){
         alert('tree_num error(Please input a number larger than 0)!');
         return false;
     }
+    $('#selected_data').val(JSON.stringify(get_selected_data()));
     return true;
 }
 
