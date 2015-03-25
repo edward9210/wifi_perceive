@@ -22,9 +22,17 @@ class Train:
 
     @property
     def dataNameList(self):
+        """
+            get data name list
+        """
         return sorted(self.__dataDict.keys())
 
     def getDataByName(self, name):
+        """
+            get data by name
+            :param name: the data's
+            :return: data saved in database
+        """
         if name in self.__dataDict.keys():
             return self.__dataDict[name]
         else:
@@ -39,6 +47,13 @@ class TrainResult:
         Train Result Model
     """
     def __init__(self, nameList, percentage, treeNum):
+        """
+            init the train result model
+            :param nameList: the list of training data's name in the database
+            :param percentage: the percentage of you want to train
+            :param treeNum: the number of decision trees you want to build
+            :return:
+        """
         self.__nameList = nameList
         self.__percentage = float(percentage) / 100.0
         self.__treeNum = int(treeNum)
@@ -49,29 +64,51 @@ class TrainResult:
 
     @property
     def percentage(self):
+        """
+            percentage (use to train)
+        """
         return self.__percentage
 
     @property
     def numOfTree(self):
+        """
+            the number of decision trees you want to build
+        """
         return self.__treeNum
 
     @property
     def correctRate(self):
+        """
+            correct rate (use test data to validate)
+        """
         return self.__correct_rate
 
     @property
     def numOfTrain(self):
+        """
+            the number of training data
+        """
         return len(self.__train_data)
 
     @property
     def numOfTest(self):
+        """
+            the number of test data
+        """
         return len(self.__test_data)
 
     @property
     def trees(self):
+        """
+            the list of decision trees
+        """
         return self.__bagging.trees
 
     def train(self):
+        """
+            train the data and get the decision trees
+            :return:
+        """
         dataSet = []
         for name in self.__nameList:
             data = Train().getDataByName(name)
@@ -95,6 +132,12 @@ class TrainResult:
         # print self.__correct_rate
 
 def saveTrainResult(name, trees):
+    """
+        save the training result
+        :param name: the name you want to save
+        :param trees: the list of decision trees
+        :return:
+    """
     trainResult = get_db().result
     trainResult.insert({
         'name' : name,
