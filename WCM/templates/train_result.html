@@ -3,13 +3,15 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>The WIFI Perceive System</title>
+    <script type="text/javascript" src="{{static_url('js/jquery-1.11.0.min.js')}}"> </script>
 </head>
 <body>
     <a href="/"><button onclick="this.parentNode.click()" type="button"> 返回 </button></a>
     <p> Use {{model.percentage * 100}}% to train ({{model.numOfTrain}} data) </p>
     <p> Use {{(1 - model.percentage) * 100}}% to validate ({{model.numOfTest}} data) </p>
     <p> Correct rate : {{model.correctRate * 100}}% </p>
-    <form action="/save_train_result" method="POST">
+    <form action="/save_train_result" method="POST" onsubmit="return check_form()">
+        result_name : <input name="result_name" id="result_name" type="text">
         <input name="trees" id="trees" value="{{model.trees}}" type="hidden">
         <input id="save_train_result" type="submit" value="Save_train_result">
     </form>
@@ -17,5 +19,6 @@
     {% for tree in model.trees %}
         <p>{{tree}}</p>
     {% end %}
+    <script type="text/javascript" src="{{static_url('js/train_result.js')}}"></script>
 </body>
 </html>

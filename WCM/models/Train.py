@@ -93,3 +93,10 @@ class TrainResult:
         # print 'correct rate:'
         self.__correct_rate = float(count) / len(self.__test_data)
         # print self.__correct_rate
+
+def saveTrainResult(name, trees):
+    trainResult = get_db().result
+    trainResult.insert({
+        'name' : name,
+        'trees' : trees,
+    })

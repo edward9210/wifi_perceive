@@ -4,7 +4,7 @@
 from tornado.web import RequestHandler
 import json
 
-from WCM.models.Train import Train, TrainResult
+from WCM.models.Train import Train, TrainResult, saveTrainResult
 
 class TrainHandler(RequestHandler):
     def get(self):
@@ -24,3 +24,11 @@ class TrainResultHandler(RequestHandler):
         model = TrainResult(selected_data_name_list, percentage, treeNum)
         model.train()
         self.render('train_result.html', model = model)
+
+class SaveTrainResultHandler(RequestHandler):
+    def post(self):
+        name = self.get_argument('result_name')
+        trees = json.loads(self.get_argument('trees'))
+        # print name, trees
+        saveTrainResult(name, trees)
+        self.redirect('/')
