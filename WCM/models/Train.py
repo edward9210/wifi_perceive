@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+
 from WCM.db import get_db
 from PAM.adapter import Adapter
 from PAM.bagging import Bagging
@@ -61,6 +63,7 @@ class TrainResult:
         self.__correct_rate = 0.0
         self.__train_data = []
         self.__test_data = []
+        self.__train()
 
     @property
     def percentage(self):
@@ -104,7 +107,14 @@ class TrainResult:
         """
         return self.__bagging.trees
 
-    def train(self):
+    @property
+    def trees_json(self):
+        """
+            the list of decision trees
+        """
+        return json.dumps(self.__bagging.trees)
+
+    def __train(self):
         """
             train the data and get the decision trees
             :return:

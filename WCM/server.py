@@ -14,6 +14,7 @@ from handlers.MonitorHandler import MonitorHandler, AjaxMonitorHandler
 from handlers.DPMDataHandler import DPMDataHandler
 from handlers.SampleHandler import SampleHandler, StartSampleHandler, StopSampleHandler, AjaxSampleHandler
 from handlers.TrainHandler import TrainHandler, AjaxTrainHandler, TrainResultHandler, SaveTrainResultHandler
+from handlers.TestHandler import TestHandler, TestResultHandler
 
 subpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -21,7 +22,7 @@ HANDLERS = [
     (r'/', IndexHandler),
     (r'/sample', SampleHandler),
     (r'/train', TrainHandler),
-    (r'/training_result', TrainResultHandler),
+    (r'/test', TestHandler),
     (r'/monitor', MonitorHandler),
 
     (r'/dpmdata', DPMDataHandler),
@@ -31,6 +32,8 @@ HANDLERS = [
     (r'/ajax_sample', AjaxSampleHandler),
     (r'/ajax_train', AjaxTrainHandler),
     (r'/save_train_result', SaveTrainResultHandler),
+    (r'/test_result', TestResultHandler),
+    (r'/training_result', TrainResultHandler),
 ]
 
 

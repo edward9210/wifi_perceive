@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>The WIFI Perceive System</title>
+    <script type="text/javascript" src="{{static_url('js/jquery-1.11.0.min.js')}}"> </script>
+	<style type="text/css">
+		#top_bar {
+			margin-top : 20px;
+		}
+	</style>
+</head>
+<body>
+    <a href="/"><button onclick="this.parentNode.click()" type="button"> 返回 </button></a>
+    <div id="top_bar">
+		<form action="/test_result" method="POST" onsubmit="return check_form()">
+			sampled data :
+			<select name="sampled_data" id="sampled_data">
+                {% for sampled_data in model.dataNameList %}
+					<option value="{{sampled_data}}">{{sampled_data}}</option>
+				{% end %}
+			</select>
+			select to test :
+			<select name="test_data" id="test_data">
+                {% for test_data in model.resultNameList %}
+					<option value="{{test_data}}">{{test_data}}</option>
+				{% end %}
+			</select>
+			<input id="test_button" type="submit" value="Test">
+		</form>
+	</div>
+
+    <script type="text/javascript" src="{{static_url('js/test.js')}}"></script>
+</body>
+</html>

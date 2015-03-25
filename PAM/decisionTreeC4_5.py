@@ -141,13 +141,15 @@ class DecisionTreeC4_5:
             return self.__majorityCount(labelList)
         bestAttr, bestSplitPoint = self.__chooseBestAttribute(dataSet)
         bestAttrName = attrNamelist[bestAttr]
-        myTree = {(bestAttrName, bestSplitPoint) : {}}
+        myTree = {bestAttrName : {}, 'sp' : bestSplitPoint}
         del(attrNamelist[bestAttr])
         leftChildDataSet, rightChildDataSet = self.__splitDataSet(dataSet, bestAttr, bestSplitPoint)
         if len(leftChildDataSet) != 0:
-            myTree[(bestAttrName, bestSplitPoint)]['left'] = self.__createTree(leftChildDataSet, attrNamelist[:])
+            myTree[bestAttrName]['left'] = self.__createTree(leftChildDataSet, attrNamelist[:])
+            myTree[bestAttrName]['sp'] = bestSplitPoint
         if len(rightChildDataSet) != 0:
-            myTree[(bestAttrName, bestSplitPoint)]['right'] = self.__createTree(rightChildDataSet, attrNamelist[:])
+            myTree[bestAttrName]['right'] = self.__createTree(rightChildDataSet, attrNamelist[:])
+            myTree[bestAttrName]['sp'] = bestSplitPoint
         return myTree
 
     def createTree(self):
@@ -170,8 +172,13 @@ class DecisionTreeC4_5:
         while True:
             if type(tree) is not dict:
                 return tree
-            attrName, splitPoint = tree.keys()[0]
-            tree = tree[(attrName, splitPoint)]
+            attrName = ''
+            splitPoint = tree['sp']
+            for key in tree.keys():
+                if key != 'sp':
+                    attrName = key
+                    break
+            tree = tree[attrName]
             value = dataVec[self.__attrNameDict[attrName]]
             if value < splitPoint:
                 tree = tree['left']
@@ -184,7 +191,24 @@ class DecisionTreeC4_5:
             self.createTree()
         return self.__tree
 
-
+def predict(tree, dataDict):
+    while True:
+        if type(tree) is not dict:
+            return tree
+        attrName = ''
+        splitPoint = tree['sp']
+        for key in tree.keys():
+            if key != 'sp':
+                attrName = key
+                break
+        tree = tree[attrName]
+        value = -128
+        if attrName in dataDict.keys():
+            value = dataDict[attrName]
+        if value < splitPoint:
+            tree = tree['left']
+        else:
+            tree = tree['right']
 
 
 

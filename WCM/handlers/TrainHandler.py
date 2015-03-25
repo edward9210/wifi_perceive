@@ -22,7 +22,6 @@ class TrainResultHandler(RequestHandler):
         percentage = self.get_argument('percentage')
         treeNum = self.get_argument('tree_num')
         model = TrainResult(selected_data_name_list, percentage, treeNum)
-        model.train()
         self.render('train_result.html', model = model)
 
 class SaveTrainResultHandler(RequestHandler):

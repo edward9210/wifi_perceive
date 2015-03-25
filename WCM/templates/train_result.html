@@ -12,7 +12,7 @@
     <p> Correct rate : {{model.correctRate * 100}}% </p>
     <form action="/save_train_result" method="POST" onsubmit="return check_form()">
         result_name : <input name="result_name" id="result_name" type="text">
-        <input name="trees" id="trees" value="{{model.trees}}" type="hidden">
+        <input name="trees" id="trees" value="{{model.trees_json}}" type="hidden">
         <input id="save_train_result" type="submit" value="Save_train_result">
     </form>
     <p> {{model.numOfTree}} Decision Trees : </p>

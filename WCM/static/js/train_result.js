@@ -7,9 +7,6 @@ function check_form(){
     return true;
 }
 
-function init() {
-    var tmp = $('#trees').val();
-    $('#trees').val(JSON.stringify(tmp));
-}
+function init() {}
 
 $(document).ready(init);
