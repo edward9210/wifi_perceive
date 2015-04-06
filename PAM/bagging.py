@@ -30,12 +30,16 @@ class Bagging:
         numOfEntries = len(self.__dataSet)
         numOfSamples = int(numOfEntries * percentage)
         self.__classifiers = []
-        for i in range(numOfTrees):
-            trainingSet = []
-            for j in range(numOfSamples):
-                index = random.randint(0, numOfEntries - 1)
-                trainingSet.append(self.__dataSet[index])
-            dt = DecisionTreeC4_5(trainingSet, self.__attrNamelist, self.__attrNameDict)
+        if numOfTrees != 1:
+            for i in range(numOfTrees):
+                trainingSet = []
+                for j in range(numOfSamples):
+                    index = random.randint(0, numOfEntries - 1)
+                    trainingSet.append(self.__dataSet[index])
+                dt = DecisionTreeC4_5(trainingSet, self.__attrNamelist, self.__attrNameDict)
+                self.__classifiers.append(dt)
+        else:
+            dt = DecisionTreeC4_5(self.__dataSet, self.__attrNamelist, self.__attrNameDict)
             self.__classifiers.append(dt)
         # for i in range(numOfTrees):
         #    print self.__classifiers[i].dTree
